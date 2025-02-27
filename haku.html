@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hae puhelinnumero</title>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <script>
+      $(document).ready(function () {
+        $('[name="submit"]').click(function () {
+          let nimi = $("#nimi").val().trim();
+
+          if (nimi === "") {
+            alert("Syötä nimi!");
+            return;
+          }
+
+          // Haetaan JSON-data
+          $.getJSON(
+            "http://a41d.k.time4vps.cloud:3001/henkilot",
+            function (data) {
+              let henkilö = data.find(
+                (person) => person.nimi.toLowerCase() === nimi.toLowerCase()
+              );
+
+              if (henkilö) {
+                $("#puhelin").val(henkilö.puhelin);
+              } else {
+                alert("Nimeä ei löytynyt!");
+                $("#puhelin").val("");
+              }
+            }
+          ).fail(function () {
+            alert("Tietojen lataaminen epäonnistui.");
+          });
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <section>
+      <h1>Hae puhelinnumero</h1>
+      <form id="form" name="form">
+        <label for="nimi">Syötä nimi:</label>
+        <input name="nimi" id="nimi" type="text" maxlength="35" size="35" />
+
+        <label for="puhelin">Puhelinnumero:</label>
+        <input
+          name="puhelin"
+          id="puhelin"
+          type="text"
+          maxlength="35"
+          size="35"
+          readonly
+        />
+
+        <input name="submit" type="button" value="Hae puhelinnumero" />
+      </form>
+      <a href="index.html" class="back-link">⬅ Takaisin pääsivulle</a>
+    </section>
+  </body>
+</html>
